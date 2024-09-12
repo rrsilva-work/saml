@@ -93,11 +93,11 @@ func (e RSA) Encrypt(certificate interface{}, plaintext []byte, nonce []byte) (*
 }
 
 func (e RSA) Decrypt(key interface{}, ciphertextEl *etree.Element) ([]byte, error) {
-	return e.DecryptRaw(key, ciphertextEl, " ")
+	return e.DecryptRaw(key, ciphertextEl, nil)
 }
 
 // Decrypt implements Decryptor. `key` must be an *rsa.PrivateKey.
-func (e RSA) DecryptRaw(key interface{}, ciphertextEl *etree.Element, keyPath string) ([]byte, error) {
+func (e RSA) DecryptRaw(key interface{}, ciphertextEl *etree.Element, encryptedKeyEl *etree.Element) ([]byte, error) {
 	rsaKey, err := validateRSAKeyIfPresent(key, ciphertextEl)
 	if err != nil {
 		return nil, err

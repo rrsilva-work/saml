@@ -29,7 +29,7 @@ type Encrypter interface {
 type Decrypter interface {
 	Algorithm() string
 	Decrypt(key interface{}, ciphertextEl *etree.Element) ([]byte, error)
-	DecryptRaw(key interface{}, ciphertextEl *etree.Element, keyPath string) ([]byte, error)
+	DecryptRaw(key interface{}, ciphertextEl *etree.Element, encryptedKeyEl *etree.Element) ([]byte, error)
 }
 
 // DigestMethod represents a digest method such as SHA1, etc.
