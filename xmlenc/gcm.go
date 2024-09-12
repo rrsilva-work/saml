@@ -82,12 +82,16 @@ func (e GCM) Encrypt(key interface{}, plaintext []byte, nonce []byte) (*etree.El
 	return encryptedDataEl, nil
 }
 
+func (e GCM) Decrypt(key interface{}, ciphertextEl *etree.Element) ([]byte, error) {
+	return e.DecryptRaw(key, ciphertextEl, "./KeyInfo/EncryptedKey")
+}
+
 // Decrypt decrypts an encrypted element with key. If the ciphertext contains an
 // EncryptedKey element, then the type of `key` is determined by the registered
 // Decryptor for the EncryptedKey element. Otherwise, `key` must be a []byte of
 // length KeySize().
-func (e GCM) Decrypt(key interface{}, ciphertextEl *etree.Element) ([]byte, error) {
-	if encryptedKeyEl := ciphertextEl.FindElement("./KeyInfo/EncryptedKey"); encryptedKeyEl != nil {
+func (e GCM) DecryptRaw(key interface{}, ciphertextEl *etree.Element, keyPath string) ([]byte, error) {
+	if encryptedKeyEl := ciphertextEl.FindElement(keyPath); encryptedKeyEl != nil {
 		var err error
 		key, err = Decrypt(key, encryptedKeyEl)
 		if err != nil {
