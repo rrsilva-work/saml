@@ -67,6 +67,19 @@ func Decrypt(key interface{}, ciphertextEl *etree.Element) ([]byte, error) {
 	return decrypter.Decrypt(key, ciphertextEl)
 }
 
+func DecryptRaw(key interface{}, ciphertextEl *etree.Element, keyPath string) ([]byte, error) {
+	encryptionMethodEl := ciphertextEl.FindElement("./EncryptionMethod")
+	if encryptionMethodEl == nil {
+		return nil, ErrCannotFindRequiredElement("EncryptionMethod")
+	}
+	algorithm := encryptionMethodEl.SelectAttrValue("Algorithm", "")
+	decrypter, ok := decrypters[algorithm]
+	if !ok {
+		return nil, ErrAlgorithmNotImplemented(algorithm)
+	}
+	return decrypter.DecryptRaw(key, ciphertextEl, keyPath)
+}
+
 func getCiphertext(encryptedKey *etree.Element) ([]byte, error) {
 	ciphertextEl := encryptedKey.FindElement("./CipherData/CipherValue")
 	if ciphertextEl == nil {
